@@ -1,4 +1,4 @@
-#include "command_protocal.pb.h"
+#include "command_lib.h"
 #include <arpa/inet.h>
 #include <iostream>
 #include <netinet/in.h>
@@ -16,14 +16,8 @@ int main() {
   if (socket < 0)
     return -1;
 
-  command::Command serverCommand;
-
-  serverCommand.set_cmd(504);
-  serverCommand.set_src(command::IPC);
-  serverCommand.set_dst(command::OBA);
-  serverCommand.set_dtt(100);
-  serverCommand.set_sig(1);
-
+  command::Command serverCommand =
+      create_command(504, command::IPC, command::OBA, 10);
   serverCommand.set_int_d(123456);
 
   std::cout << "------ Sending message to server ------" << std::endl;

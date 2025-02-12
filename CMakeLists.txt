@@ -23,17 +23,20 @@ add_custom_command(
 add_custom_target(command_protocols DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/command_protocal.pb.cc ${CMAKE_CURRENT_SOURCE_DIR}/src/command_protocal.pb.h)
 
 # Add executable targets
-add_executable(sender src/sender.cc src/command_protocal.pb.cc)
-add_executable(receiver src/receiver.cc src/command_protocal.pb.cc)
+add_library(command_lib src/command_lib.cc src/command_lib.h src/command_protocal.pb.cc)
+add_executable(sender src/sender.cc)
+add_executable(receiver src/receiver.cc)
 
 # Link Protobuf libraries
 
-target_link_libraries(sender ${Protobuf_LIBRARIES} absl::base absl::strings absl::log_internal_check_op)
-target_link_libraries(receiver ${Protobuf_LIBRARIES} absl::base absl::strings absl::log_internal_check_op)
+target_link_libraries(command_lib ${Protobuf_LIBRARIES} absl::base absl::strings absl::log_internal_check_op)
+target_link_libraries(receiver command_lib)
+target_link_libraries(sender command_lib)
 
 # Add dependencies to ensure Protobuf files are generated before compiling
-add_dependencies(sender command_protocols) 
-add_dependencies(receiver command_protocols)
+add_dependencies(command_lib command_protocols) 
+add_dependencies(sender command_lib) 
+add_dependencies(receiver command_lib)
 
 # Clean target
 set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/command_protocal.pb.*")
