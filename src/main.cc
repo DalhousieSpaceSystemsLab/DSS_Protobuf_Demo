@@ -79,9 +79,9 @@ int main(int argc, char *argv[]) {
     if (reader_state.ready) {
       command::Command recvCommand;
       recvCommand.ParseFromArray(read_buffer, (int)MAXLEN);
-
-      printf("Message recived (%d): %s\n", reader_state.bytes,
-             recvCommand.DebugString());
+      const std::string debug_string = recvCommand.DebugString();
+      printf("Message recived (%d)\n%s", reader_state.bytes,
+             debug_string.c_str());
 
       reader_state.ready = false;
     }
